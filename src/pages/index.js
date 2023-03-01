@@ -1,0 +1,6 @@
+export{default as Home} from './Home'
+export{default as Movies} from './Movies'
+export{default as Tv} from './Tv'
+export{default as MyList} from './MyList'
+export{default as MovieDetails} from './MovieDetails'
+export{default as News} from './News'
