@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import { auth } from '../../firebase';
 
 
@@ -10,6 +10,8 @@ const Login = () => {
 
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
+  const [passwordError , setPasswordError] = useState("");
+  const [emailError, setEmailError] = useState("");
 
   
   const register = (e)=>{
@@ -23,7 +25,13 @@ const Login = () => {
         console.log(authUser);
       })
       .catch((error)=>{
-        alert(error.message);
+        if (error.code === "auth/email-already-in-use") {
+          setEmailError("User already exists");
+        } else if (error.code === "auth/weak-password") {
+          setPasswordError("Password should be 6 or more characters");
+        } else {
+          setEmailError("Invalid email or password");
+        }
       });
 
   };
@@ -38,7 +46,11 @@ const Login = () => {
       console.log(authUser);
     })
     .catch((error)=>{
-      alert(error.message);
+      if (error.code === "auth/wrong-password" || error.code === "auth/invalid-email") {
+        setPasswordError("Invalid email or password.");
+      } else {
+        setPasswordError(error.message);
+      }
     });
 
 
@@ -57,9 +69,11 @@ const Login = () => {
             <h1 className="text-3xl font-bold text-white mb-8">Sign In</h1>
             <div className="mb-4">
               <input ref={emailRef} className="w-full px-4 py-3 rounded-lg bg-white text-black focus:outline-none focus:ring focus:border-blue-300 " type="text" placeholder="Email or phone number" />
+              {emailError && <p className="text-red-500 text-sm">{emailError}</p>}
             </div>
             <div className="mb-4">
               <input ref={passwordRef} className="w-full px-4 py-3 rounded-lg bg-white text-black focus:outline-none focus:ring focus:border-blue-300" type="password" placeholder="Password" />
+              {passwordError && <p className="text-red-500 text-sm">{passwordError}</p>}
             </div>
             <div className="mb-6 flex items-center">
               <input type="checkbox" id="remember-me" className="mr-2" />
